@@ -15,7 +15,7 @@ export const Header = component$(() => {
       <div class="container mx-auto px-4 py-6">
         <div class="flex justify-between items-center">
           <Link href="/" class="text-2xl font-bold text-primary">
-            Recipe Hub
+            RecipeHub
           </Link>
           <nav class="hidden md:flex space-x-6">
             {categories.map((category) => (
