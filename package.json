@@ -44,5 +44,8 @@
     "undici": "*",
     "vite": "5.3.5",
     "vite-tsconfig-paths": "^4.2.1"
+  },
+  "dependencies": {
+    "ofetch": "^1.4.1"
   }
 }
