@@ -1,4 +1,4 @@
-import { component$, useContext } from "@builder.io/qwik";
+import { component$, useContext, $ } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import { ThemeContext } from "~/contexts/theme";
 
@@ -12,6 +12,19 @@ const categories = [
 
 export const Header = component$(() => {
   const theme = useContext(ThemeContext);
+
+  const handleThemeChange = $((event: Event) => {
+    const selectedTheme = (event.target as HTMLSelectElement).value as 'light' | 'dark' | 'system';
+    theme.value = selectedTheme;
+    if (selectedTheme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      localStorage.setItem('theme', systemTheme);
+      document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+    } else {
+      localStorage.setItem('theme', selectedTheme);
+      document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
+    }
+  });
 
   return (
     <header class="bg-white dark:bg-gray-800 shadow-md">
@@ -34,17 +47,7 @@ export const Header = component$(() => {
             </nav>
             <select
               value={theme.value}
-              onChange$={(event) => {
-                theme.value = (event.target as HTMLSelectElement).value as 'light' | 'dark' | 'system';
-                if (theme.value === 'system') {
-                  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                  localStorage.setItem('theme', systemTheme);
-                  document.documentElement.classList.toggle('dark', systemTheme === 'dark');
-                } else {
-                  localStorage.setItem('theme', theme.value);
-                  document.documentElement.classList.toggle('dark', theme.value === 'dark');
-                }
-              }}
+              onChange$={handleThemeChange}
               class="bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">Choose a theme 🎨</option>

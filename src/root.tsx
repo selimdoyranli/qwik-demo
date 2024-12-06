@@ -10,6 +10,14 @@ import { ThemeContext, type Theme } from "./contexts/theme";
 
 import "./global.css";
 
+function applyTheme() {
+  const storedTheme = localStorage.getItem('theme');
+  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  const theme = storedTheme === 'system' ? systemTheme : storedTheme || systemTheme;
+  localStorage.setItem('theme', theme);
+  document.documentElement.classList.toggle('dark', theme === 'dark');
+}
+
 export default component$(() => {
   const themeStore = useStore<{ value: Theme }>({
     value: (typeof window !== 'undefined' ? localStorage.getItem('theme') as Theme : null) ?? 'system'
@@ -36,15 +44,7 @@ export default component$(() => {
     <QwikCityProvider>
       <head>
         <meta charset="utf-8" />
-        <script dangerouslySetInnerHTML={`
-          (function() {
-            const storedTheme = localStorage.getItem('theme');
-            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            const theme = storedTheme === 'system' ? systemTheme : storedTheme || systemTheme;
-            localStorage.setItem('theme', theme);
-            document.documentElement.classList.toggle('dark', theme === 'dark');
-          })()
-        `} />
+        <script dangerouslySetInnerHTML={`(${applyTheme.toString()})()`} />
         {!isDev && (
           <link
             rel="manifest"
