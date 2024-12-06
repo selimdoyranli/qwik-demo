@@ -7,8 +7,7 @@ export const createApiInstance = (options: FetchOptions = {}) => {
   return ofetch.create({
     baseURL: BASE_URL,
     ...options,
-    async onRequest({ options }) {
-      // Add any request interceptors here
+    async onRequest({ options }) {   
       options.headers = new Headers({
         ...Object.fromEntries(options.headers),
         'Content-Type': 'application/json',
