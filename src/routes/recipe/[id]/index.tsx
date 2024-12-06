@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
 import type { Recipe } from "~/types/recipe";
 import { ofetch } from "ofetch";
 
@@ -7,6 +7,20 @@ export const useRecipe = routeLoader$(async ({ params }) => {
   const recipe = await ofetch<Recipe>(`https://dummyjson.com/recipes/${params.id}`);
   return recipe;
 });
+
+export const head: DocumentHead = ({ resolveValue }) => {
+  const recipe = resolveValue(useRecipe);
+  
+  return {
+    title: `${recipe.name} Recipe - RecipeHub`,
+    meta: [
+      {
+        name: "description",
+        content: `Learn how to make ${recipe.name}. Find ingredients and step-by-step instructions.`,
+      },
+    ],
+  };
+};
 
 export default component$(() => {
   const recipe = useRecipe();

@@ -36,6 +36,14 @@ export const Header = component$(() => {
               value={theme.value}
               onChange$={(event) => {
                 theme.value = (event.target as HTMLSelectElement).value as 'light' | 'dark' | 'system';
+                if (theme.value === 'system') {
+                  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  localStorage.setItem('theme', systemTheme);
+                  document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+                } else {
+                  localStorage.setItem('theme', theme.value);
+                  document.documentElement.classList.toggle('dark', theme.value === 'dark');
+                }
               }}
               class="bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary"
             >

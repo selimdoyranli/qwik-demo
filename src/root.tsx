@@ -12,7 +12,7 @@ import "./global.css";
 
 export default component$(() => {
   const themeStore = useStore<{ value: Theme }>({
-    value: (typeof window !== 'undefined' && localStorage.getItem('theme') as Theme) || 'system'
+    value: (typeof window !== 'undefined' ? localStorage.getItem('theme') as Theme : null) ?? 'system'
   });
 
   useTask$(({ track }) => {
@@ -22,7 +22,7 @@ export default component$(() => {
 
     if (theme === 'system') {
       const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      localStorage.setItem('theme', systemTheme);
+      localStorage.setItem('theme', 'system');
       document.documentElement.classList.toggle('dark', systemTheme === 'dark');
     } else {
       localStorage.setItem('theme', theme);

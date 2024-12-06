@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
 import type { RecipesResponse } from "~/types/recipe";
 import { RecipeCard } from "~/components/recipe-card/recipe-card";
 import { ofetch } from "ofetch";
@@ -13,6 +13,21 @@ export const useRecipesByCategory = routeLoader$(async ({ params }) => {
     )
   };
 });
+
+export const head: DocumentHead = ({ params }) => {
+  const category = params.category;
+  const capitalizedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+  
+  return {
+    title: `${capitalizedCategory} Recipes - RecipeHub`,
+    meta: [
+      {
+        name: "description",
+        content: `Discover delicious ${category} recipes and cooking instructions`,
+      },
+    ],
+  };
+};
 
 export default component$(() => {
   const recipes = useRecipesByCategory();
