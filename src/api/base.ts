@@ -9,10 +9,10 @@ export const createApiInstance = (options: FetchOptions = {}) => {
     ...options,
     async onRequest({ options }) {
       // Add any request interceptors here
-      options.headers = {
-        ...options.headers,
+      options.headers = new Headers({
+        ...Object.fromEntries(options.headers),
         'Content-Type': 'application/json',
-      };
+      });
     },
     async onResponse({ response }) {
       // Add any response interceptors here
