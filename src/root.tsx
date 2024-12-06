@@ -1,4 +1,4 @@
-import { component$ } from "@builder.io/qwik";
+import { component$, useContextProvider, useStore, useTask$ } from "@builder.io/qwik";
 import {
   QwikCityProvider,
   RouterOutlet,
@@ -6,21 +6,45 @@ import {
 } from "@builder.io/qwik-city";
 import { RouterHead } from "./components/router-head/router-head";
 import { isDev } from "@builder.io/qwik/build";
+import { ThemeContext, type Theme } from "./contexts/theme";
 
 import "./global.css";
 
 export default component$(() => {
-  /**
-   * The root of a QwikCity site always start with the <QwikCityProvider> component,
-   * immediately followed by the document's <head> and <body>.
-   *
-   * Don't remove the `<head>` and `<body>` elements.
-   */
+  const themeStore = useStore<{ value: Theme }>({
+    value: (typeof window !== 'undefined' && localStorage.getItem('theme') as Theme) || 'system'
+  });
+
+  useTask$(({ track }) => {
+    const theme = track(() => themeStore.value);
+    
+    if (typeof window === 'undefined') return;
+
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      localStorage.setItem('theme', systemTheme);
+      document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+    } else {
+      localStorage.setItem('theme', theme);
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+    }
+  });
+
+  useContextProvider(ThemeContext, themeStore);
 
   return (
     <QwikCityProvider>
       <head>
         <meta charset="utf-8" />
+        <script dangerouslySetInnerHTML={`
+          (function() {
+            const storedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const theme = storedTheme === 'system' ? systemTheme : storedTheme || systemTheme;
+            localStorage.setItem('theme', theme);
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+          })()
+        `} />
         {!isDev && (
           <link
             rel="manifest"
