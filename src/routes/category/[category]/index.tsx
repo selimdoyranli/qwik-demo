@@ -1,17 +1,10 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
-import type { RecipesResponse } from "~/types/recipe";
 import { RecipeCard } from "~/components/recipe-card/recipe-card";
-import { ofetch } from "ofetch";
+import { api } from "~/api";
 
 export const useRecipesByCategory = routeLoader$(async ({ params }) => {
-  const data = await ofetch<RecipesResponse>(`https://dummyjson.com/recipes`);
-  return {
-    ...data,
-    recipes: data.recipes.filter(recipe => 
-      recipe.cuisine.toLowerCase() === params.category.toLowerCase()
-    )
-  };
+  return api.rest.recipe.fetchRecipesByCategory({ category: params.category });
 });
 
 export const head: DocumentHead = ({ params }) => {

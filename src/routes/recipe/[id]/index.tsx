@@ -1,11 +1,9 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
-import type { Recipe } from "~/types/recipe";
-import { ofetch } from "ofetch";
+import { api } from "~/api";
 
 export const useRecipe = routeLoader$(async ({ params }) => {
-  const recipe = await ofetch<Recipe>(`https://dummyjson.com/recipes/${params.id}`);
-  return recipe;
+  return api.rest.recipe.fetchRecipe({ id: params.id });
 });
 
 export const head: DocumentHead = ({ resolveValue }) => {

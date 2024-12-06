@@ -1,12 +1,11 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
 import { Link } from "@builder.io/qwik-city";
-import { ofetch } from "ofetch";
-import type { RecipesResponse } from "~/types/recipe";
 import { RecipeCard } from "~/components/recipe-card/recipe-card";
+import { api } from "~/api";
 
 export const useRecipes = routeLoader$(async () => {
-  const data = await ofetch<RecipesResponse>("https://dummyjson.com/recipes");
+  const data = await api.rest.recipe.fetchRecipes();
   return data;
 });
 
