@@ -1,5 +1,5 @@
 import type { Recipe, RecipesResponse } from '~/types/recipe';
-import { baseApi } from '../base';
+import { baseApi } from './base';
 
 export const recipeApi = {
   fetchRecipes: async (): Promise<RecipesResponse> => {
@@ -19,4 +19,4 @@ export const recipeApi = {
       ),
     };
   },
-};
+}; 
